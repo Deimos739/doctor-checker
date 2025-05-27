@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>DOCtor Checker</title>
+    <style>
+        /* Основные настройки */
+        body {
+            background-color: #2ecc71;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            margin: 10% auto;
+        }
+
+        h1, h2 {
+            color: #2ecc71;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Кастомное поле загрузки файла */
+        .custom-file-upload {
+            position: relative;
+            display: inline-block;
+            padding: 12px 16px;
+            border: 1px solid #2ecc71;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: left;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 465px;
+            color: #000000; /* Чёрный текст */
+        }
+
+        .custom-file-upload input[type="file"] {
+            opacity: 0;
+            width: 0.1px;
+            height: 0.1px;
+            visibility: hidden;
+        }
+
+        .file-name {
+            margin-left: 8px;
+            color: #000000; /* Чёрный текст */
+            font-size: 14px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        /* Кнопка "Загрузить" */
+        .btn-primary {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #2ecc71;
+            color: #ffffff;
+            border: none;
+            text-align: center;
+        }
+
+        .btn-primary:hover {
+            background-color: #27ae60;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 24px;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .document-name {
+            flex-grow: 1;
+            margin-right: 12px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 20ch; /* Ограничиваем до 20 символов */
+            color: #000000; /* Чёрный текст */
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .document-name:hover {
+            text-decoration: underline;
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            width: 200px;
+            padding: 12px 16px;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: transparent;
+            color: #2ecc71;
+            border: 2px solid #2ecc71;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e7f9ea;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Загрузите документ</h1>
+
+    <!-- Форма загрузки -->
+    <form method="post" action="/documents/upload" enctype="multipart/form-data">
+        <label for="fileInput" class="custom-file-upload">
+            Выберите файл
+            <input type="file" id="fileInput" name="file" />
+        </label>
+        <span class="file-name" id="fileName">Файл не выбран</span>
+        <button type="submit" class="btn-primary">Загрузить</button>
+    </form>
+
+    <!-- Список документов -->
+    <h2>Список документов</h2>
+    <ul>
+        <li th:each="doc : ${documents}">
+            <span class="document-name" th:text="${doc.originalName}" th:title="${doc.originalName}"></span>
+            <a th:href="@{/documents/apply-style/download/{id}(id=${doc.id})}" class="btn-secondary">Скачать с ГОСТ стилем</a>
+        </li>
+    </ul>
+</div>
+
+<!-- JS для отображения имени файла -->
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const fileNameSpan = document.getElementById('fileName');
+
+    fileInput.addEventListener('change', function () {
+        if (fileInput.files.length > 0) {
+            fileNameSpan.textContent = fileInput.files[0].name;
+        } else {
+            fileNameSpan.textContent = 'Файл не выбран';
+        }
+    });
+</script>
+
+</body>
+</html>
